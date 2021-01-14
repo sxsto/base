@@ -1,0 +1,26 @@
+# File: .github/workflows/repo-sync.yml
+name: sync-EvineDeng/jd-base
+on:
+  schedule:
+  - cron:  "*/15 * * * *"
+  workflow_dispatch:
+  watch:
+    types: started
+  push:
+    branches: [master]
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+    - name: repo-sync
+      uses: repo-sync/github-sync@v2
+      with:
+        source_repo: "https://github.com/EvineDeng/jd-base.git"
+        source_branch: "v3"
+        destination_branch: "master"
+        github_token: ${{ secrets.PAT }}
